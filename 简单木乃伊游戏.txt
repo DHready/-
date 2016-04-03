@@ -1,0 +1,149 @@
+#include<stdio.h>
+#include<iostream>
+#include<string.h>
+#include<windows.h>
+#include<conio.h>
+
+using namespace std;
+
+char map[30][30] = {
+      "##########",
+      "#        .",
+      "#  #m     ",
+      "#r      # "
+};
+int dir[4][2] = {0,-1,1,0,0,1,-1,0};
+int rrow = 3,rcol = 1,mrow = 2,mcol = 4,arow = 1,acol = 9;
+int m = 10,n = 10,flag = 0;
+
+void display();
+void game();
+int islegal(int,int);
+int isaim(int,int);
+void mover(int);
+void movem();
+int direction(char);
+int gameover();
+
+int main()
+{
+    display();
+    game();
+    if(flag == 1)
+        printf("Congratulations!\n");
+    if(flag == 2)
+        printf("what a pity!\n");
+    return 0;
+}
+
+void display()
+{
+    system("cls");
+    for(int i = 0;i < m;i++){
+        for(int j = 0;j < n;j++){
+            printf("%2c",map[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void game()
+{
+    char ch;
+    int fx,r,c;
+    while(1){
+    ch = getch();//输入方向
+    fx = direction(ch);
+    mover(fx);
+    if(isaim(rrow,rcol))
+        {
+            flag = 1;
+            break;
+        }
+    movem();
+    movem();
+    if(gameover())
+    {
+        flag = 2;
+        break;
+    }
+    display();
+    }
+    if(flag != 0)
+    display();
+}
+int direction(char ch)
+{
+    switch(ch){
+        case 'a':
+             return 0;
+        case 's':
+             return 1;
+        case 'd':
+             return 2;
+        case 'w':
+             return 3;
+    }
+}
+
+int gameover()
+{
+    if(mrow == rrow && rcol == mcol)
+        return 1;
+    else
+        return 0;
+}
+
+int islegal(int x,int y)
+{
+    if(x>=0&&x< m&&y>=0&&y<n)
+        return 1;
+    return 0;
+}
+
+void mover(int fx)
+{
+    int r,c;
+    r = rrow + dir[fx][0];
+    c = rcol + dir[fx][1];
+    if(islegal(r,c)&&(map[r][c] == ' '||map[r][c]=='.'))//可能有问题
+    {
+        map[rrow][rcol] = ' ';
+        map[r][c] = 'r';
+        rrow = r;
+        rcol = c;
+    }
+}
+
+void movem()
+{
+    int r,c;
+    r = mrow;
+    c = mcol;
+    if(r == rrow){
+        if(c < rcol)
+            c++;
+        else
+            c--;
+    }
+    else{
+        if(r < rrow)
+            r++;
+        else
+            r--;
+    }
+    if(map[r][c] != '#')
+    {
+    map[r][c] = 'm';
+    map[mrow][mcol] = ' ';
+    mrow = r;
+    mcol = c;
+    }
+}
+
+int isaim(int x,int y)
+{
+    if(x == arow&&y == acol)
+        return 1;
+    return 0;
+}
